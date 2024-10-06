@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { auth } from '../firebase';
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/AuthContext';
 
 const Login = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const { user } = UserContext()
+  const navigate = useNavigate()
 
   const handleSignIn = async (e:React.MouseEvent<HTMLElement>) => {
     await signInWithEmailAndPassword(auth, email, password)
@@ -15,6 +19,12 @@ const Login = () => {
     const provider = new GoogleAuthProvider()
     await signInWithPopup(auth, provider)
   }
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard')
+    }
+  }, [user])
 
   return (
     <div>
